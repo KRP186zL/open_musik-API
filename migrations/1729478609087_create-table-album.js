@@ -1,7 +1,6 @@
 /**
  * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
  */
-exports.shorthands = undefined;
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
@@ -9,17 +8,17 @@ exports.shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-  pgm.createTable("album", {
+  pgm.createTable('albums', {
     album_id: {
-      type: "VARCHAR(22)",
+      type: 'VARCHAR(22)',
       primaryKey: true,
     },
     name: {
-      type: "VARCHAR(255)",
+      type: 'VARCHAR(255)',
       notNull: true,
     },
     year: {
-      type: "INT",
+      type: 'INT',
       notNull: true,
     },
   });
@@ -31,5 +30,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable("album");
+  pgm.dropTable('albums');
 };

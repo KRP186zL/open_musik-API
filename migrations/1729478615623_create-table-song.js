@@ -1,7 +1,6 @@
 /**
  * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
  */
-exports.shorthands = undefined;
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
@@ -9,32 +8,32 @@ exports.shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-  pgm.createTable("song", {
+  pgm.createTable('songs', {
     song_id: {
-      type: "VARCHAR(21)",
+      type: 'VARCHAR(21)',
       primaryKey: true,
     },
     title: {
-      type: "VARCHAR(255)",
+      type: 'VARCHAR(255)',
       notNull: true,
     },
     year: {
-      type: "INT",
+      type: 'INT',
       notNull: true,
     },
     performer: {
-      type: "VARCHAR(50)",
+      type: 'VARCHAR(50)',
       notNull: true,
     },
     genre: {
-      type: "VARCHAR(10)",
+      type: 'VARCHAR(10)',
       notNull: true,
     },
     duration: {
-      type: "INT",
+      type: 'INT',
     },
     album_id: {
-      type: "VARCHAR(22)",
+      type: 'VARCHAR(22)',
       notNull: false,
     },
   });
@@ -46,5 +45,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable("song");
+  pgm.dropTable('songs');
 };
