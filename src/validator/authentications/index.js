@@ -29,7 +29,7 @@ const ValidatorAuthenticationsSchema = {
 
     return value;
   },
-  validateDeletePayloadAuthentication: (payload) => {
+  validateDeletePayloadAuth: (payload) => {
     const validationResult = DeletePayloadAuthenticationSchema.validate(payload);
 
     const { error, value } = validationResult;

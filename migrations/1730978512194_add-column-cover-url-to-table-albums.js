@@ -8,27 +8,11 @@
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-  pgm.createTable('playlists', {
-    playlist_id: {
-      type: 'VARCHAR(25)',
-      primaryKey: true,
-    },
-
-    name: {
-      type: 'VARCHAR(50)',
-      notNull: true,
-    },
-    owner: {
-      type: 'VARCHAR(21)',
-      notNull: true,
+  pgm.addColumn('albums', {
+    cover_url: {
+      type: 'TEXT',
     },
   });
-
-  pgm.addConstraint(
-    'playlists',
-    'fk_playlists.owner_users.user_id',
-    'FOREIGN KEY (owner) REFERENCES users(user_id) ON DELETE CASCADE'
-  );
 };
 
 /**
@@ -37,5 +21,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-  pgm.dropTable('playlists');
+  pgm.dropColumn('albums', 'cover_url');
 };

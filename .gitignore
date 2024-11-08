@@ -1,2 +1,3 @@
 node_module
 .env
+open_musik-queue-consumer/.env

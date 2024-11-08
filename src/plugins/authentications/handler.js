@@ -19,11 +19,11 @@ class AuthenticationsHandler {
   }
 
   async postAuthenticationHandler(request, h) {
-    const validatedPostPayloadAuthentication = this.#validator.validatePostPayloadAuthentication(
+    const validatedPayload = this.#validator.validatePostPayloadAuthentication(
       request.payload,
     );
 
-    const { username, password } = validatedPostPayloadAuthentication;
+    const { username, password } = validatedPayload;
 
     const userId = await this.#usersService.verifyCredentialUser(username, password);
 
@@ -45,11 +45,11 @@ class AuthenticationsHandler {
   }
 
   async putAuthenticationHandler(request, h) {
-    const validatedPutPayloadAuthentication = this.#validator.validatePutPayloadAuthentication(
+    const validatedPayload = this.#validator.validatePutPayloadAuthentication(
       request.payload,
     );
 
-    const { refreshToken } = validatedPutPayloadAuthentication;
+    const { refreshToken } = validatedPayload;
 
     await this.#authenticationsService.verifyRefreshToken(refreshToken);
 
@@ -69,11 +69,9 @@ class AuthenticationsHandler {
   }
 
   async deleteAuthenticationHandler(request, h) {
-    const validatedDeletePayload = await this.#validator.validateDeletePayloadAuthentication(
-      request.payload,
-    );
+    const validatedPayload = await this.#validator.validateDeletePayloadAuth(request.payload);
 
-    const { refreshToken } = validatedDeletePayload;
+    const { refreshToken } = validatedPayload;
 
     await this.#authenticationsService.verifyRefreshToken(refreshToken);
 

@@ -10,7 +10,9 @@ class SongService {
     this.#pool = new Pool();
   }
 
-  async postSong({ title, year, genre, performer, duration, albumId }) {
+  async postSong({
+    title, year, genre, performer, duration, albumId,
+  }) {
     const id = `song-${nanoid(16)}`;
 
     const query = {
@@ -58,7 +60,9 @@ class SongService {
     return result.rows[0];
   }
 
-  async putSongById(id, { title, year, genre, performer, duration, albumId }) {
+  async putSongById(id, {
+    title, year, genre, performer, duration, albumId,
+  }) {
     const query = {
       text: 'UPDATE song SET title = $1, year = $2, performer = $3, genre = $4, duration = COALESCE($5, duration), album_id = COALESCE($6, album_id) WHERE song_id = $7 RETURNING song_id',
       values: [title, year, performer, genre, duration ?? null, albumId ?? null, id],

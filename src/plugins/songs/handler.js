@@ -70,7 +70,12 @@ class SongHandler {
     const validatedPayload = this.#validator.validateSongPayload(request.payload);
 
     const {
-      title, year, genre, performer, duration, albumId,
+      title,
+      year,
+      genre,
+      performer,
+      duration,
+      albumId,
     } = validatedPayload;
 
     await this.#service.putSongById(id, title, year, genre, performer, duration, albumId);

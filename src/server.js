@@ -3,6 +3,8 @@ require('dotenv').config();
 // Package
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
+const path = require('path');
 
 // Custom Error
 const ClientError = require('./error/ClientError');
@@ -14,6 +16,11 @@ const TokenManager = require('./token/TokenManager');
 const albumsPlugin = require('./plugins/albums');
 const AlbumsService = require('./services/AlbumsService');
 const ValidatorAlbums = require('./validator/albums');
+// Fitur Upload
+const StorageService = require('./services/storage/StorageService');
+const ValidatorUploads = require('./validator/uploads');
+// Fitur Like
+const LikeService = require('./services/LikeService');
 
 // Songs Plugin
 const songsPlugin = require('./plugins/songs');
@@ -35,12 +42,23 @@ const playlistsPlugin = require('./plugins/playlists');
 const PlaylistsService = require('./services/PlaylistsService');
 const ValidatorPlaylists = require('./validator/playlists');
 
+// Exports Plugin
+const exportsPlugin = require('./plugins/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ValidatorExports = require('./validator/exports');
+
+// Caching
+const CacheService = require('./services/redis/CacheService');
+
 (async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const playlistsService = new PlaylistsService();
+  const storageService = new StorageService(path.resolve(__dirname, '../img/cover'));
+  const cacheService = new CacheService();
+  const likeService = new LikeService(cacheService);
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -54,6 +72,9 @@ const ValidatorPlaylists = require('./validator/playlists');
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
@@ -78,8 +99,11 @@ const ValidatorPlaylists = require('./validator/playlists');
     {
       plugin: albumsPlugin,
       options: {
-        service: albumsService,
-        validator: ValidatorAlbums,
+        albumsService,
+        storageService,
+        likeService,
+        validatorAlbums: ValidatorAlbums,
+        validatorUploads: ValidatorUploads,
       },
     },
     {
@@ -113,12 +137,19 @@ const ValidatorPlaylists = require('./validator/playlists');
         validator: ValidatorPlaylists,
       },
     },
+    {
+      plugin: exportsPlugin,
+      options: {
+        playlistsService,
+        producerService: ProducerService,
+        validator: ValidatorExports,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
-    // console.log('\n\n\n', response.stack);
 
     if (response instanceof Error) {
       // penanganan client error secara internal.
